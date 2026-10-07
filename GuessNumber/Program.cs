@@ -61,59 +61,111 @@
 // string parity = n % 2 == 0 ? "чётное" : "нечётное";
 // Console.WriteLine($"Число {n} - {parity}");
 
-Console.WriteLine("Меню");
-Console.WriteLine("1. Посмотреть расписание");
-Console.WriteLine("2. Посмотреть оценки");
-Console.WriteLine("3. Связаться с преподавателем");
-Console.WriteLine("4. Выйти");
-Console.Write("Выберите пункт (1-4): ");
+// Console.WriteLine("Меню");
+// Console.WriteLine("1. Посмотреть расписание");
+// Console.WriteLine("2. Посмотреть оценки");
+// Console.WriteLine("3. Связаться с преподавателем");
+// Console.WriteLine("4. Выйти");
+// Console.Write("Выберите пункт (1-4): ");
 
-string choice = Console.ReadLine();
-switch (choice) {
-    case "1":
-        Console.WriteLine("Расписание: ИСП-241, каб. 1-02, 10:10");
-        break;
-    case "2":
-        Console.WriteLine("Ваши оценки: ИСРПО - 18, РМП - 10, РПМ - 0");
-        break;
-    case "3":
-        Console.WriteLine("Email: denis.leontev92@yandex.ru");
-        break;
-    case "4":
-        Console.WriteLine("До свидания!");
-        break;
-    case "26":
-        Console.WriteLine("Секретный пункт! (посхалко)");
-        break;
-    default:
-        Console.WriteLine($"Ошибка: пункт {choice} не существует. Введите число от 1 до 4.");
-        break;
-}
+// string choice = Console.ReadLine();
+// switch (choice) {
+//     case "1":
+//         Console.WriteLine("Расписание: ИСП-241, каб. 1-02, 10:10");
+//         break;
+//     case "2":
+//         Console.WriteLine("Ваши оценки: ИСРПО - 18, РМП - 10, РПМ - 0");
+//         break;
+//     case "3":
+//         Console.WriteLine("Email: denis.leontev92@yandex.ru");
+//         break;
+//     case "4":
+//         Console.WriteLine("До свидания!");
+//         break;
+//     case "26":
+//         Console.WriteLine("Секретный пункт! (посхалко)");
+//         break;
+//     default:
+//         Console.WriteLine($"Ошибка: пункт {choice} не существует. Введите число от 1 до 4.");
+//         break;
+// }
 
-Console.Write("Выберите число месяца (1-12): ");
-string month = Console.ReadLine();
-switch (month) {
-    case "12":
-    case "1":
-    case "2":
-        Console.WriteLine("Сейчас зима");
-        break;
-    case "3":
-    case "4":
-    case "5":
-        Console.WriteLine("Сейчас весна");
-        break;
-    case "6":
-    case "7":
-    case "8":
-        Console.WriteLine("Сейчас лето");
-        break;
-    case "9":
-    case "10":
-    case "11":
-        Console.WriteLine("Сейчас осень");
-        break;
-    default:
-        Console.WriteLine($"Некорректный ввод: {month}. Введите число от 1 до 12");
-        break;
+// Console.Write("Выберите число месяца (1-12): ");
+// string month = Console.ReadLine();
+// switch (month) {
+//     case "12":
+//     case "1":
+//     case "2":
+//         Console.WriteLine("Сейчас зима");
+//         break;
+//     case "3":
+//     case "4":
+//     case "5":
+//         Console.WriteLine("Сейчас весна");
+//         break;
+//     case "6":
+//     case "7":
+//     case "8":
+//         Console.WriteLine("Сейчас лето");
+//         break;
+//     case "9":
+//     case "10":
+//     case "11":
+//         Console.WriteLine("Сейчас осень");
+//         break;
+//     default:
+//         Console.WriteLine($"Некорректный ввод: {month}. Введите число от 1 до 12");
+//         break;
+// }
+
+Random random = new Random();
+int secret = random.Next(1, 101);
+int attempts = 0;
+bool guessed = false;
+Console.WriteLine("Угадай число (1-100)");
+Console.WriteLine("Я загадал число. Попробуй угадать!");
+string GetHint(int difference) {
+    switch (difference) {
+        case <= 3:
+            return "🔥 Горячо!";
+        case <= 10:
+            return "♨ Тепло.";
+        case <= 25:
+            return "💧 Прохладно.";
+        default:
+            return "❄ Холодно!";
+    }
 }
+while (!guessed) {
+    Console.Write($"Попытка {attempts + 1}. Твой вариант: ");
+    string input = Console.ReadLine();
+
+    if (!int.TryParse(input, out int guess)) {
+        Console.WriteLine("❗❗ Введи целое число, а не текст!");
+        continue;
+    }
+    
+    if (guess < 1 || guess > 100) {
+        Console.WriteLine("❗❗ Число должно быть от 1 до 100!");
+        continue;
+    }
+    attempts++;
+    if (guess < secret) {
+        int diff = secret - guess;
+        string hint = GetHint(diff);
+        Console.WriteLine($"↑ Больше! {hint}\n");
+    }
+    else if (guess > secret) {
+        int diff = guess - secret;
+        string hint = GetHint(diff);
+        Console.WriteLine($"↓ Меньше! {hint}\n");
+    }
+    else {
+        guessed = true; // угадал!
+    }
+}
+string result = attempts <= 7
+    ? $"Отличный результат! Всего {attempts} попыток."
+    : $"Число найдено за {attempts} попыток. Можно лучше!";
+Console.WriteLine($"🎉 Правильно! Загаданное число: {secret}");
+Console.WriteLine($"{result}");
